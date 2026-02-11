@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>トイ・ストーリー・マニア! 🎯</title>
     <meta
       name="description"
-      content="トイ・ストーリー・マニア風のシューティングゲーム。エイリアンやバズを狙ってハイスコアを目指そう！"
+      content="トイ・ストーリー・マニア風のシューティングゲーム。パチンコで弾を飛ばしてターゲットを狙え！"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,37 +34,19 @@
             <div class="title-subtitle">🎯 シューティングゲーム 🎯</div>
           </div>
           <div class="title-characters">
-            <img
-              src="assets/woody.png"
-              alt="ウッディ"
-              class="title-woody"
-              id="title-woody"
-            />
-            <img
-              src="assets/jessie.png"
-              alt="ジェシー"
-              class="title-jessie"
-              id="title-jessie"
-            />
+            <img src="assets/woody.png" alt="ウッディ" class="title-woody" />
+            <img src="assets/jessie.png" alt="ジェシー" class="title-jessie" />
           </div>
           <div class="title-speech" id="title-speech">
-            <p>さあ、シューティングゲームを<br />はじめよう！</p>
+            <p>パチンコで弾を飛ばして<br />ターゲットを撃て！</p>
           </div>
           <button class="start-btn" id="start-btn">
             <span class="btn-icon">🚀</span>
             <span class="btn-text">ゲームスタート!</span>
           </button>
           <div class="title-targets">
-            <img
-              src="assets/alien.png"
-              alt="エイリアン"
-              class="title-target title-alien"
-            />
-            <img
-              src="assets/buzz.png"
-              alt="バズ"
-              class="title-target title-buzz"
-            />
+            <img src="assets/alien.png" alt="エイリアン" class="title-target title-alien" />
+            <img src="assets/buzz.png" alt="バズ" class="title-target title-buzz" />
           </div>
         </div>
       </div>
@@ -83,8 +65,32 @@
 
     <!-- ===== ゲーム画面 ===== -->
     <div id="game-screen" class="screen">
-      <div class="game-arena" id="game-arena">
-        <!-- ターゲットがJSで動的追加される -->
+      <!-- ターゲットゾーン（奥側） -->
+      <div class="target-zone" id="target-zone">
+        <!-- ターゲットがJSで追加される -->
+      </div>
+
+      <!-- 弾道レイヤー -->
+      <div class="projectile-layer" id="projectile-layer"></div>
+
+      <!-- ヒットエフェクト用レイヤー -->
+      <div class="effects-layer" id="effects-layer"></div>
+
+      <!-- キャラクター -->
+      <div class="game-characters">
+        <div class="game-char game-woody-wrap">
+          <img src="assets/woody.png" alt="ウッディ" class="game-char-img" id="game-woody" />
+          <div class="char-speech" id="woody-speech"></div>
+        </div>
+        <div class="game-char game-jessie-wrap">
+          <img src="assets/jessie.png" alt="ジェシー" class="game-char-img" id="game-jessie" />
+          <div class="char-speech" id="jessie-speech"></div>
+        </div>
+      </div>
+
+      <!-- パチンコ（スリングショット） -->
+      <div class="slingshot-area" id="slingshot-area">
+        <canvas id="slingshot-canvas"></canvas>
       </div>
 
       <!-- HUD -->
@@ -103,13 +109,7 @@
           <div class="hud-timer-ring">
             <svg viewBox="0 0 100 100" class="timer-svg">
               <circle cx="50" cy="50" r="45" class="timer-bg-circle" />
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                class="timer-fg-circle"
-                id="timer-circle"
-              />
+              <circle cx="50" cy="50" r="45" class="timer-fg-circle" id="timer-circle" />
             </svg>
             <div class="timer-text" id="hud-timer">60</div>
           </div>
@@ -125,9 +125,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ヒットエフェクト用レイヤー -->
-      <div class="effects-layer" id="effects-layer"></div>
     </div>
 
     <!-- ===== リザルト画面 ===== -->
