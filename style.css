@@ -124,23 +124,33 @@ html, body {
 }
 @keyframes speechPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
 
+/* Title Buttons */
+.title-buttons { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 300px; }
+
 /* Start Button */
 .start-btn {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 40px; font-family: var(--font-display);
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 14px 20px; font-family: var(--font-display);
   font-size: clamp(18px, 4.5vw, 28px); color: var(--ts-white);
   background: linear-gradient(135deg, var(--ts-red), var(--ts-orange));
   border: none; border-radius: 50px; cursor: pointer;
-  box-shadow: 0 6px 20px rgba(230,57,70,0.5), inset 0 2px 0 rgba(255,255,255,0.2);
-  transition: all 0.2s ease; position: relative; overflow: hidden;
+  box-shadow: 0 6px 0 #c0392b, 0 10px 20px rgba(0,0,0,0.4);
+  transition: all 0.1s ease; position: relative; overflow: hidden;
+  width: 100%;
 }
-.start-btn::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
-  transform: translateX(-100%); animation: shimmer 3s ease-in-out infinite;
+.start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c0392b, 0 4px 10px rgba(0,0,0,0.4); }
+
+.rank-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 20px; font-family: var(--font-display);
+  font-size: clamp(16px, 4vw, 24px); color: var(--ts-white);
+  background: linear-gradient(135deg, var(--ts-blue), var(--ts-purple));
+  border: none; border-radius: 50px; cursor: pointer;
+  box-shadow: 0 6px 0 #2a5298, 0 10px 20px rgba(0,0,0,0.4);
+  transition: all 0.1s ease; width: 100%;
 }
-@keyframes shimmer { 0% { transform: translateX(-100%); } 60%,100% { transform: translateX(100%); } }
-.start-btn:active { transform: translateY(0) scale(0.98); }
+.rank-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #2a5298, 0 4px 10px rgba(0,0,0,0.4); }
+
 .btn-icon { font-size: 1.2em; }
 
 /* Title targets */
@@ -498,3 +508,73 @@ html, body {
   transition: all 0.2s ease; position: relative; overflow: hidden;
 }
 .replay-btn:active { transform: scale(0.96); }
+
+/* ==============================
+   MODALS
+   ============================== */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal.active { opacity: 1; pointer-events: auto; }
+
+.modal-content {
+  background: #fff;
+  width: 90%; max-width: 400px;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes modalPop { from { transform: scale(0.8); } to { transform: scale(1); } }
+
+.close-modal {
+  position: absolute; top: 12px; right: 16px;
+  font-size: 28px; color: #aaa; cursor: pointer;
+  line-height: 1;
+}
+.close-modal:hover { color: #555; }
+
+.modal h2 {
+  font-family: var(--font-display);
+  color: var(--ts-purple);
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Leaderboard List */
+.leaderboard-list {
+  max-height: 300px; overflow-y: auto;
+  border: 1px solid #eee; border-radius: 10px;
+}
+.leaderboard-item {
+  display: flex; justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  font-family: var(--font-display);
+}
+.leaderboard-item:nth-child(1) { background: rgba(255,215,0,0.15); color: #d4af37; font-weight: bold; }
+.leaderboard-item:nth-child(2) { background: rgba(192,192,192,0.15); color: #888; }
+.leaderboard-item:nth-child(3) { background: rgba(205,127,50,0.15); color: #cd7f32; }
+
+/* Input Modal */
+.modal input {
+  width: 100%; padding: 12px;
+  font-size: 18px; border: 2px solid #ddd; border-radius: 8px;
+  margin-bottom: 16px; text-align: center;
+  font-family: var(--font-display);
+}
+.modal button {
+  padding: 12px 30px;
+  background: var(--ts-green); color: white;
+  border: none; border-radius: 30px;
+  font-size: 18px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 4px 0 #05ac80;
+}
+.modal button:active { transform: translateY(2px); box-shadow: 0 2px 0 #05ac80; }

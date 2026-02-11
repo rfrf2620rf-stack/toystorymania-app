@@ -40,10 +40,16 @@
           <div class="title-speech" id="title-speech">
             <p>パチンコで弾を飛ばして<br />ターゲットを撃て！</p>
           </div>
-          <button class="start-btn" id="start-btn">
-            <span class="btn-icon">🚀</span>
-            <span class="btn-text">ゲームスタート!</span>
-          </button>
+          <div class="title-buttons">
+            <button class="start-btn" id="start-btn">
+              <span class="btn-icon">🚀</span>
+              <span class="btn-text">ゲームスタート!</span>
+            </button>
+            <button class="rank-btn" id="rank-btn">
+              <span class="btn-icon">🏆</span>
+              <span class="btn-text">ランキング</span>
+            </button>
+          </div>
           <div class="title-targets">
             <img src="assets/alien.png" alt="エイリアン" class="title-target title-alien" />
             <img src="assets/buzz.png" alt="バズ" class="title-target title-buzz" />
@@ -164,6 +170,34 @@
       </div>
     </div>
 
+    <!-- ===== LEADERBOARD MODAL ===== -->
+    <div id="leaderboard-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>🏆 ランキング 🏆</h2>
+        <div class="leaderboard-list" id="leaderboard-list">
+          <!-- JS populates this -->
+          <div class="loading-spinner">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NAME INPUT MODAL ===== -->
+    <div id="name-input-modal" class="modal">
+      <div class="modal-content">
+        <h2>🎉 ハイスコア更新! 🎉</h2>
+        <p>名前を入力してください</p>
+        <input type="text" id="player-name" maxlength="10" placeholder="YOU" />
+        <button id="submit-score-btn">送信</button>
+      </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- App Scripts -->
+    <script src="leaderboard.js"></script>
     <script src="game.js"></script>
   </body>
 </html>

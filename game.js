@@ -17,7 +17,7 @@
                 duration: 20,
                 targets: ['alien'],
                 spawnInterval: [1800, 2800],
-                targetSize: [70, 100],
+                targetSizeFactor: [0.10, 0.14], // fraction of min(vw,vh)
                 speed: 0.3,
                 maxTargets: 4,
                 lifetime: [3500, 5500],
@@ -29,7 +29,7 @@
                 duration: 20,
                 targets: ['buzz'],
                 spawnInterval: [1400, 2200],
-                targetSize: [55, 85],
+                targetSizeFactor: [0.08, 0.12],
                 speed: 0.5,
                 maxTargets: 5,
                 lifetime: [3000, 4500],
@@ -41,7 +41,7 @@
                 duration: 20,
                 targets: ['alien', 'buzz'],
                 spawnInterval: [1000, 1800],
-                targetSize: [50, 80],
+                targetSizeFactor: [0.07, 0.10],
                 speed: 0.7,
                 maxTargets: 6,
                 lifetime: [2500, 4000],
@@ -189,6 +189,8 @@
         ballPos: { x: 0, y: 0 },
         // Speech timers
         speechTimers: { woody: null, jessie: null },
+        // Modals
+        isLeaderboardOpen: false,
     };
 
     const dom = {};
@@ -211,6 +213,7 @@
         dom.gameScreen = $('#game-screen');
         dom.resultScreen = $('#result-screen');
         dom.startBtn = $('#start-btn');
+        dom.rankBtn = $('#rank-btn');
         dom.replayBtn = $('#replay-btn');
         dom.targetZone = $('#target-zone');
         dom.projectileLayer = $('#projectile-layer');
@@ -237,13 +240,40 @@
         dom.resultAccuracy = $('#result-accuracy');
         dom.resultRank = $('#result-rank');
         dom.resultMessage = $('#result-message');
+        
+        // Modals
+        dom.leaderboardModal = $('#leaderboard-modal');
+        dom.leaderboardList = $('#leaderboard-list');
+        dom.closeModal = $('.close-modal');
+        dom.nameInputModal = $('#name-input-modal');
+        dom.playerNameInput = $('#player-name');
+        dom.submitScoreBtn = $('#submit-score-btn');
 
         generateStars();
 
-        dom.startBtn.addEventListener('click', startGame);
-        dom.startBtn.addEventListener('touchend', (e) => { e.preventDefault(); startGame(); });
-        dom.replayBtn.addEventListener('click', restartGame);
-        dom.replayBtn.addEventListener('touchend', (e) => { e.preventDefault(); restartGame(); });
+        if (dom.startBtn) {
+            dom.startBtn.addEventListener('click', startGame);
+            dom.startBtn.addEventListener('touchend', (e) => { e.preventDefault(); startGame(); });
+        }
+        if (dom.rankBtn) {
+            dom.rankBtn.addEventListener('click', openLeaderboard);
+            dom.rankBtn.addEventListener('touchend', (e) => { e.preventDefault(); openLeaderboard(); });
+        }
+        if (dom.replayBtn) {
+            dom.replayBtn.addEventListener('click', restartGame);
+            dom.replayBtn.addEventListener('touchend', (e) => { e.preventDefault(); restartGame(); });
+        }
+        if (dom.closeModal) {
+            dom.closeModal.addEventListener('click', closeLeaderboard);
+            dom.closeModal.addEventListener('touchend', (e) => { e.preventDefault(); closeLeaderboard(); });
+        }
+        if (dom.submitScoreBtn) {
+            dom.submitScoreBtn.addEventListener('click', submitScore);
+            dom.submitScoreBtn.addEventListener('touchend', (e) => { e.preventDefault(); submitScore(); });
+        }
+
+        // Leaderboard init
+        if (window.Leaderboard) window.Leaderboard.init();
 
         // Slingshot touch/mouse events
         dom.slingshotCanvas.addEventListener('touchstart', onDragStart, { passive: false });
@@ -699,14 +729,20 @@
         const charType = charTypes[Math.floor(Math.random() * charTypes.length)];
         const imgSrc = CONFIG.TARGET_IMAGES[charType];
 
-        const [minSize, maxSize] = round.targetSize;
-        const size = minSize + Math.random() * (maxSize - minSize);
+        const [minFac, maxFac] = round.targetSizeFactor;
+        const fac = minFac + Math.random() * (maxFac - minFac);
+        // Use min(vw, vh) for scaling
+        const vMin = Math.min(window.innerWidth, window.innerHeight);
+        const size = vMin * fac;
+        
+        // Ensure somewhat usable size
+        const finalSize = Math.max(size, 40); // min 40px
 
         const zoneW = dom.targetZone.clientWidth;
         const zoneH = dom.targetZone.clientHeight;
 
-        const x = 10 + Math.random() * (zoneW - size - 20);
-        const y = 10 + Math.random() * (zoneH - size - 20);
+        const x = 10 + Math.random() * (zoneW - finalSize - 20);
+        const y = 10 + Math.random() * (zoneH - finalSize - 20);
 
         // Random velocity for sway
         const speed = round.speed;
@@ -1010,6 +1046,72 @@
         dom.resultMessage.textContent = message;
 
         showScreen('result-screen');
+
+        // Check for high score input
+        if (state.score > 0) {
+            setTimeout(() => {
+                showNameInput();
+            }, 1000);
+        }
+    }
+
+    // ===== LEADERBOARD LOGIC =====
+    async function openLeaderboard() {
+        dom.leaderboardModal.classList.add('active');
+        state.isLeaderboardOpen = true;
+        
+        if (dom.leaderboardList) {
+            dom.leaderboardList.innerHTML = '<div style="padding:20px; text-align:center;">Loading...</div>';
+            
+            if (window.Leaderboard) {
+                const scores = await window.Leaderboard.getTopScores(20);
+                renderLeaderboard(scores);
+            } else {
+                dom.leaderboardList.innerHTML = '<div style="padding:20px; text-align:center;">Leaderboard unavailable</div>';
+            }
+        }
+    }
+
+    function closeLeaderboard() {
+        dom.leaderboardModal.classList.remove('active');
+        state.isLeaderboardOpen = false;
+    }
+
+    function renderLeaderboard(scores) {
+        if (!dom.leaderboardList) return;
+        dom.leaderboardList.innerHTML = '';
+        
+        if (scores.length === 0) {
+            dom.leaderboardList.innerHTML = '<div style="padding:20px; text-align:center;">No scores yet!</div>';
+            return;
+        }
+
+        scores.forEach((s, i) => {
+            const item = document.createElement('div');
+            item.className = 'leaderboard-item';
+            item.innerHTML = `
+                <span>${i + 1}. ${s.name}</span>
+                <span>${s.score}</span>
+            `;
+            dom.leaderboardList.appendChild(item);
+        });
+    }
+
+    function showNameInput() {
+        dom.nameInputModal.classList.add('active');
+        dom.playerNameInput.focus();
+    }
+
+    function submitScore() {
+        const name = dom.playerNameInput.value.trim() || 'NoName';
+        if (window.Leaderboard) {
+            window.Leaderboard.saveScore(name, state.score);
+        }
+        dom.nameInputModal.classList.remove('active');
+        dom.playerNameInput.value = '';
+        
+        // Show updated leaderboard
+        openLeaderboard();
     }
 
     function clearTimers() {
