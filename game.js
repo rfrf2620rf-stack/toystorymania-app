@@ -52,12 +52,13 @@
             alien: 'assets/alien.png',
             buzz: 'assets/buzz.png',
         },
-        PROJECTILE_SPEED: 12,   // pixels per frame
+        PROJECTILE_SPEED_FACTOR: 0.035,  // multiplied by viewport height
         PROJECTILE_RADIUS: 9,
-        GRAVITY: 0.08,          // subtle arc
+        GRAVITY_FACTOR: 0.00003,         // multiplied by viewport height
         SLINGSHOT: {
             MAX_PULL: 120,      // max pull distance in px
-            MIN_PULL: 20,       // minimum pull to fire
+            MIN_PULL: 15,       // minimum pull to fire
+            GRAB_RADIUS: 80,    // how far from center you can grab
         },
         DIALOGUES: {
             roundStart: [
@@ -387,17 +388,18 @@
             if (pullDist > CONFIG.SLINGSHOT.MIN_PULL) {
                 const power = Math.min(pullDist / CONFIG.SLINGSHOT.MAX_PULL, 1);
                 const angle = Math.atan2(dy, dx);
-                const speed = CONFIG.PROJECTILE_SPEED * power;
+                const vpH = window.innerHeight;
+                const speed = vpH * CONFIG.PROJECTILE_SPEED_FACTOR * power;
                 const vx = Math.cos(angle) * speed;
                 const vy = Math.sin(angle) * speed;
+                const gravity = vpH * CONFIG.GRAVITY_FACTOR;
 
                 ctx.save();
                 ctx.fillStyle = 'rgba(255,209,102,0.4)';
                 for (let i = 1; i <= 8; i++) {
                     const t = i * 5;
                     const px = bx + vx * t;
-                    // Convert to screen coords (slingshot area ends at top, target zone starts)
-                    const py = by + vy * t + 0.5 * CONFIG.GRAVITY * t * t;
+                    const py = by + vy * t + 0.5 * gravity * t * t;
                     if (py < 0) break;
                     const dotSize = 3 - i * 0.2;
                     ctx.globalAlpha = 1 - i * 0.1;
@@ -438,7 +440,7 @@
         const dx = pos.x - state.slingshotCenter.x;
         const dy = pos.y - state.slingshotCenter.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 60) {
+        if (dist < CONFIG.SLINGSHOT.GRAB_RADIUS) {
             state.dragging = true;
             state.dragStart = { ...pos };
             audio.resume();
@@ -485,7 +487,10 @@
             // Fire!
             const power = Math.min(pullDist / CONFIG.SLINGSHOT.MAX_PULL, 1);
             const angle = Math.atan2(dy, dx);
-            fireProjectile(angle, power);
+            // Scale speed to viewport height so ball always reaches target zone
+            const vpH = window.innerHeight;
+            const speed = vpH * CONFIG.PROJECTILE_SPEED_FACTOR * power;
+            fireProjectile(angle, speed);
             state.shots++;
             audio.play('shoot');
         }
@@ -516,8 +521,7 @@
     }
 
     // ===== PROJECTILE =====
-    function fireProjectile(angle, power) {
-        const speed = CONFIG.PROJECTILE_SPEED * power;
+    function fireProjectile(angle, speed) {
         const slingshotRect = dom.slingshotArea.getBoundingClientRect();
         const screenX = slingshotRect.left + state.slingshotCenter.x;
         const screenY = slingshotRect.top + state.slingshotCenter.y;
@@ -604,7 +608,8 @@
 
                 p.x += p.vx * dt;
                 p.y += p.vy * dt;
-                p.vy += CONFIG.GRAVITY * dt; // subtle gravity
+                const gravity = window.innerHeight * CONFIG.GRAVITY_FACTOR;
+                p.vy += gravity * dt; // subtle gravity scaled to viewport
                 
                 // Trail
                 if (Math.random() < 0.5) {
