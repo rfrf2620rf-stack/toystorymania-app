@@ -1,5 +1,5 @@
 /* ==============================
-   トイ・ストーリー・マニア! — パチンコ版 Game Engine
+   トイ・シューター — パチンコ版 Game Engine
    スリングショットで弾を飛ばしてターゲットを狙え！
    ============================== */
 
@@ -247,6 +247,7 @@
         dom.closeModal = $('.close-modal');
         dom.nameInputModal = $('#name-input-modal');
         dom.playerNameInput = $('#player-name');
+        dom.recentNamesContainer = $('#recent-names');
         dom.submitScoreBtn = $('#submit-score-btn');
 
         generateStars();
@@ -1099,11 +1100,36 @@
 
     function showNameInput() {
         dom.nameInputModal.classList.add('active');
+        dom.playerNameInput.value = ''; // Clear previous input
+        
+        // Load recent names
+        if (dom.recentNamesContainer) {
+            dom.recentNamesContainer.innerHTML = '';
+            const recents = getRecentNames();
+            if (recents.length > 0) {
+                recents.forEach(name => {
+                    const chip = document.createElement('div');
+                    chip.className = 'name-chip';
+                    chip.textContent = name;
+                    chip.onclick = () => {
+                        dom.playerNameInput.value = name;
+                        // Optional: auto-submit or just focus
+                        dom.playerNameInput.focus();
+                    };
+                    dom.recentNamesContainer.appendChild(chip);
+                });
+            }
+        }
+        
         dom.playerNameInput.focus();
     }
 
     function submitScore() {
         const name = dom.playerNameInput.value.trim() || 'NoName';
+        
+        // Save to recent names
+        saveRecentName(name);
+
         if (window.Leaderboard) {
             window.Leaderboard.saveScore(name, state.score);
         }
@@ -1112,6 +1138,26 @@
         
         // Show updated leaderboard
         openLeaderboard();
+    }
+
+    // ===== RECENT NAMES HELPERS =====
+    function getRecentNames() {
+        try {
+            const str = localStorage.getItem('toy_shooter_recent_names');
+            return str ? JSON.parse(str) : [];
+        } catch (e) { return []; }
+    }
+
+    function saveRecentName(name) {
+        if (!name) return;
+        let recents = getRecentNames();
+        // Remove if exists (to move to top)
+        recents = recents.filter(n => n !== name);
+        // Add to front
+        recents.unshift(name);
+        // Keep max 5
+        if (recents.length > 5) recents.pop();
+        localStorage.setItem('toy_shooter_recent_names', JSON.stringify(recents));
     }
 
     function clearTimers() {

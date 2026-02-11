@@ -93,8 +93,7 @@ html, body {
   text-shadow: 3px 3px 0 rgba(0,0,0,0.3), 0 0 20px rgba(255,209,102,0.4);
 }
 .title-toy { font-size: clamp(44px, 11vw, 72px); color: var(--ts-yellow); letter-spacing: 8px; }
-.title-story { font-size: clamp(52px, 13vw, 88px); color: var(--ts-white); letter-spacing: 12px; margin-top: -8px; }
-.title-mania { font-size: clamp(36px, 9vw, 64px); color: var(--ts-red); letter-spacing: 4px; }
+.title-story { font-size: clamp(40px, 10vw, 72px); color: var(--ts-white); letter-spacing: 8px; margin-top: -8px; }
 .title-subtitle {
   font-family: var(--font-display); font-size: clamp(14px, 3.5vw, 22px);
   color: var(--ts-yellow); letter-spacing: 4px; margin-top: 4px; opacity: 0.9;
@@ -578,3 +577,18 @@ html, body {
   box-shadow: 0 4px 0 #05ac80;
 }
 .modal button:active { transform: translateY(2px); box-shadow: 0 2px 0 #05ac80; }
+
+/* Recent Names */
+.recent-names-container {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  margin-bottom: 16px;
+}
+.name-chip {
+  padding: 8px 16px;
+  background: #f0f0f0; border: 1px solid #ddd;
+  border-radius: 20px; font-size: 14px; color: #555;
+  font-family: var(--font-display);
+  cursor: pointer; transition: all 0.2s ease;
+}
+.name-chip:hover { background: #e0e0e0; transform: translateY(-1px); }
+.name-chip:active { transform: translateY(1px); }
