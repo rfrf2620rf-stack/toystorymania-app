@@ -215,8 +215,9 @@
         dom.replayBtn.addEventListener('click', restartGame);
         dom.replayBtn.addEventListener('touchend', (e) => { e.preventDefault(); restartGame(); });
 
-        dom.arena.addEventListener('click', onArenaClick);
-        dom.arena.addEventListener('touchstart', onArenaTouch, { passive: false });
+        // Attach click to game-screen so it catches all clicks in the game area
+        dom.gameScreen.addEventListener('click', onArenaClick);
+        dom.gameScreen.addEventListener('touchstart', onArenaTouch, { passive: false });
     }
 
     function generateStars() {
@@ -461,6 +462,7 @@
         el.style.top = y + 'px';
         el.style.opacity = '0';
         el.style.transition = 'opacity 0.3s, transform 0.3s';
+        el.style.zIndex = '10';
 
         const img = document.createElement('img');
         img.src = imgSrc;
@@ -470,6 +472,20 @@
         dom.arena.appendChild(el);
         const targetObj = { id, el, x, y, vx, vy, size, bornAt: performance.now(), lifetime, type: charType, dead: false };
         state.targets.push(targetObj);
+
+        // Direct click handler on the target for reliable hit detection
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!state.running || targetObj.dead) return;
+            handleHit(targetObj, e.clientX, e.clientY);
+        });
+        el.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!state.running || targetObj.dead) return;
+            const touch = e.changedTouches[0];
+            handleHit(targetObj, touch.clientX, touch.clientY);
+        }, { passive: false });
     }
 
     function removeAllTargets() {
@@ -522,6 +538,9 @@
     }
 
     function handleHit(targetObj, x, y) {
+        // Guard against double-hit from multiple event paths
+        if (targetObj.dead) return;
+        
         // Combo
         state.combo++;
         if (state.combo > state.maxCombo) state.maxCombo = state.combo;
