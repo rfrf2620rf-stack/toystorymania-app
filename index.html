@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>トイ・ストーリー・マニア! 🎯</title>
+    <meta
+      name="description"
+      content="トイ・ストーリー・マニア風のシューティングゲーム。エイリアンやバズを狙ってハイスコアを目指そう！"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ===== タイトル画面 ===== -->
+    <div id="title-screen" class="screen active">
+      <div class="title-bg">
+        <div class="stars-container" id="title-stars"></div>
+        <div class="title-content">
+          <div class="title-logo">
+            <h1 class="title-text">
+              <span class="title-toy">TOY</span>
+              <span class="title-story">STORY</span>
+              <span class="title-mania">マニア!</span>
+            </h1>
+            <div class="title-subtitle">🎯 シューティングゲーム 🎯</div>
+          </div>
+          <div class="title-characters">
+            <img
+              src="assets/woody.png"
+              alt="ウッディ"
+              class="title-woody"
+              id="title-woody"
+            />
+            <img
+              src="assets/jessie.png"
+              alt="ジェシー"
+              class="title-jessie"
+              id="title-jessie"
+            />
+          </div>
+          <div class="title-speech" id="title-speech">
+            <p>さあ、シューティングゲームを<br />はじめよう！</p>
+          </div>
+          <button class="start-btn" id="start-btn">
+            <span class="btn-icon">🚀</span>
+            <span class="btn-text">ゲームスタート!</span>
+          </button>
+          <div class="title-targets">
+            <img
+              src="assets/alien.png"
+              alt="エイリアン"
+              class="title-target title-alien"
+            />
+            <img
+              src="assets/buzz.png"
+              alt="バズ"
+              class="title-target title-buzz"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ラウンド開始演出 ===== -->
+    <div id="round-screen" class="screen">
+      <div class="round-content">
+        <div class="round-number" id="round-number">ROUND 1</div>
+        <div class="round-theme" id="round-theme">エイリアンを撃て！</div>
+        <div class="round-character" id="round-character">
+          <img src="assets/alien.png" alt="" class="round-char-img" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ゲーム画面 ===== -->
+    <div id="game-screen" class="screen">
+      <div class="game-arena" id="game-arena">
+        <!-- ターゲットがJSで動的追加される -->
+      </div>
+
+      <!-- HUD -->
+      <div class="game-hud">
+        <div class="hud-left">
+          <div class="hud-score">
+            <div class="hud-label">SCORE</div>
+            <div class="hud-value" id="hud-score">0</div>
+          </div>
+          <div class="hud-combo" id="hud-combo-container" style="display: none">
+            <span class="combo-text" id="hud-combo">×2</span>
+            <span class="combo-label">COMBO!</span>
+          </div>
+        </div>
+        <div class="hud-center">
+          <div class="hud-timer-ring">
+            <svg viewBox="0 0 100 100" class="timer-svg">
+              <circle cx="50" cy="50" r="45" class="timer-bg-circle" />
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                class="timer-fg-circle"
+                id="timer-circle"
+              />
+            </svg>
+            <div class="timer-text" id="hud-timer">60</div>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="hud-round">
+            <div class="hud-label">ROUND</div>
+            <div class="hud-value" id="hud-round">1</div>
+          </div>
+          <div class="hud-hits">
+            <div class="hud-label">HITS</div>
+            <div class="hud-value" id="hud-hits">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ヒットエフェクト用レイヤー -->
+      <div class="effects-layer" id="effects-layer"></div>
+    </div>
+
+    <!-- ===== リザルト画面 ===== -->
+    <div id="result-screen" class="screen">
+      <div class="result-content">
+        <div class="result-header">
+          <h2 class="result-title">ゲームクリア!</h2>
+          <div class="result-rank" id="result-rank">⭐</div>
+        </div>
+        <div class="result-characters">
+          <img src="assets/woody.png" alt="ウッディ" class="result-woody" />
+          <img src="assets/jessie.png" alt="ジェシー" class="result-jessie" />
+        </div>
+        <div class="result-stats">
+          <div class="stat-row">
+            <span class="stat-label">スコア</span>
+            <span class="stat-value" id="result-score">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">ヒット数</span>
+            <span class="stat-value" id="result-hits">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">最大コンボ</span>
+            <span class="stat-value" id="result-max-combo">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">命中率</span>
+            <span class="stat-value" id="result-accuracy">0%</span>
+          </div>
+        </div>
+        <div class="result-message" id="result-message">すごい！</div>
+        <button class="replay-btn" id="replay-btn">
+          <span class="btn-icon">🔄</span>
+          <span class="btn-text">もう一回あそぶ!</span>
+        </button>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
