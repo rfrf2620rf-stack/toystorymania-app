@@ -16,6 +16,8 @@
         BOARD_SIZE_PCT: 0.33, // fraction of min(field.w, field.h) used as board diameter
         LAUNCH_X_PCT: 0.5,
         LAUNCH_Y_PCT: 0.88,
+        MOVE_AFTER_DARTS: 5, // board starts moving once this many darts have been thrown
+        BOARD_MOVE_SPEED: 0.09, // px/ms
         ZONES: [
             { r: 0.10, points: 500, bullseye: true },
             { r: 0.24, points: 300 },
@@ -35,8 +37,13 @@
         launchPos: { x: 0, y: 0 },
         boardCenter: { x: 0, y: 0 },
         boardRadius: 0,
+        boardBounds: { xMin: 0, xMax: 0 },
+        boardMoving: false,
+        boardDir: 1,
         calibDist: 0,
         dartPull: { x: 0, y: 0 },
+        rafId: null,
+        lastFrameTime: 0,
     };
 
     const dom = {};
@@ -83,8 +90,8 @@
         dom.replayBtn.addEventListener('click', startDarts);
         dom.replayBtn.addEventListener('touchend', (e) => { e.preventDefault(); startDarts(); });
 
-        dom.titleBtn.addEventListener('click', () => showScreen('title-screen'));
-        dom.titleBtn.addEventListener('touchend', (e) => { e.preventDefault(); showScreen('title-screen'); });
+        dom.titleBtn.addEventListener('click', () => { stopLoop(); showScreen('title-screen'); });
+        dom.titleBtn.addEventListener('touchend', (e) => { e.preventDefault(); stopLoop(); showScreen('title-screen'); });
 
         dom.dartToy.addEventListener('touchstart', onDragStart, { passive: false });
         dom.dartToy.addEventListener('touchmove', onDragMove, { passive: false });
@@ -98,6 +105,7 @@
 
     function quitToTitle() {
         state.running = false;
+        stopLoop();
         showScreen('title-screen');
     }
 
@@ -108,9 +116,17 @@
         dom.launcher.style.left = state.launchPos.x + 'px';
         dom.launcher.style.top = state.launchPos.y + 'px';
 
-        state.boardCenter = { x: rect.width * CONFIG.BOARD_X_PCT, y: rect.height * CONFIG.BOARD_Y_PCT };
         const minSide = Math.min(rect.width, rect.height);
         state.boardRadius = (minSide * CONFIG.BOARD_SIZE_PCT) / 2;
+        state.boardBounds = {
+            xMin: state.boardRadius + 10,
+            xMax: rect.width - state.boardRadius - 10,
+        };
+
+        const boardX = state.boardMoving
+            ? Math.max(state.boardBounds.xMin, Math.min(state.boardBounds.xMax, state.boardCenter.x))
+            : rect.width * CONFIG.BOARD_X_PCT;
+        state.boardCenter = { x: boardX, y: rect.height * CONFIG.BOARD_Y_PCT };
 
         dom.board.style.left = state.boardCenter.x + 'px';
         dom.board.style.top = state.boardCenter.y + 'px';
@@ -124,12 +140,58 @@
         state.calibDist = distToBoard / CONFIG.POWER_AT_BULLSEYE;
     }
 
+    function activateBoardMovement() {
+        state.boardMoving = true;
+        state.boardDir = Math.random() < 0.5 ? 1 : -1;
+
+        const toast = document.createElement('div');
+        toast.className = 'dart-toast';
+        toast.textContent = '的が動き出した！';
+        dom.field.appendChild(toast);
+        setTimeout(() => toast.remove(), 1600);
+
+        dom.board.classList.add('board-moving');
+
+        stopLoop();
+        state.lastFrameTime = 0;
+        state.rafId = requestAnimationFrame(boardLoop);
+    }
+
+    function boardLoop(now) {
+        if (!state.running || !state.boardMoving) return;
+        if (!state.lastFrameTime) state.lastFrameTime = now;
+        const dt = now - state.lastFrameTime;
+        state.lastFrameTime = now;
+
+        state.boardCenter.x += state.boardDir * CONFIG.BOARD_MOVE_SPEED * dt;
+        if (state.boardCenter.x <= state.boardBounds.xMin) {
+            state.boardCenter.x = state.boardBounds.xMin;
+            state.boardDir = 1;
+        } else if (state.boardCenter.x >= state.boardBounds.xMax) {
+            state.boardCenter.x = state.boardBounds.xMax;
+            state.boardDir = -1;
+        }
+        dom.board.style.left = state.boardCenter.x + 'px';
+
+        state.rafId = requestAnimationFrame(boardLoop);
+    }
+
+    function stopLoop() {
+        if (state.rafId) cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+        state.lastFrameTime = 0;
+    }
+
     function startDarts() {
         state.running = true;
         state.busy = false;
         state.score = 0;
         state.bullseyes = 0;
         state.dartsLeft = CONFIG.TOTAL_DARTS;
+        state.boardMoving = false;
+        state.boardDir = 1;
+        stopLoop();
+        dom.board.classList.remove('board-moving');
         dom.flightLayer.innerHTML = '';
         resetDartToy();
         updateHUD();
@@ -201,6 +263,10 @@
         updateHUD();
         dom.dartToy.style.opacity = '0';
 
+        if (!state.boardMoving && CONFIG.TOTAL_DARTS - state.dartsLeft >= CONFIG.MOVE_AFTER_DARTS) {
+            activateBoardMovement();
+        }
+
         const flying = document.createElement('div');
         flying.className = 'flying-dart';
         flying.style.left = state.launchPos.x + 'px';
@@ -248,6 +314,7 @@
     function endDarts() {
         state.running = false;
         state.busy = false;
+        stopLoop();
 
         dom.resultScore.textContent = state.score;
         dom.resultBulls.textContent = `${state.bullseyes} / ${CONFIG.TOTAL_DARTS}`;

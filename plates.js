@@ -157,22 +157,6 @@
         positionLanes();
     }
 
-    // Simulate a lane's x position `tMs` milliseconds into the future.
-    function predictLaneX(lane, tMs) {
-        let x = lane.x;
-        let dir = lane.dir;
-        const step = 16;
-        let remaining = tMs;
-        while (remaining > 0) {
-            const dt = Math.min(step, remaining);
-            x += dir * lane.cfg.speed * dt;
-            if (x <= lane.xMin) { x = lane.xMin; dir = 1; }
-            else if (x >= lane.xMax) { x = lane.xMax; dir = -1; }
-            remaining -= dt;
-        }
-        return x;
-    }
-
     function loop(now) {
         if (!state.running) return;
         if (!state.lastFrameTime) state.lastFrameTime = now;
@@ -291,8 +275,10 @@
         let bestLane = null;
         let bestDist = Infinity;
         state.lanes.forEach((lane) => {
-            const predictedX = predictLaneX(lane, CONFIG.FLIGHT_MS);
-            const dist = Math.hypot(landing.x - predictedX, landing.y - lane.y);
+            // lane.x already reflects the real time elapsed during the flight
+            // (the animation loop keeps running the whole time), so it IS the
+            // plate's actual position now -- no further prediction needed.
+            const dist = Math.hypot(landing.x - lane.x, landing.y - lane.y);
             if (dist <= lane.radius && dist < bestDist) {
                 bestDist = dist;
                 bestLane = lane;
