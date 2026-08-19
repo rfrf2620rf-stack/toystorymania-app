@@ -8,7 +8,7 @@
 
     // ===== CONFIG =====
     const CONFIG = {
-        TOTAL_TIME: 60,
+        TOTAL_TIME: 80,
         ROUNDS: [
             {
                 name: 'ROUND 1',
@@ -46,11 +46,24 @@
                 maxTargets: 6,
                 lifetime: [2500, 4000],
             },
+            {
+                name: 'ROUND 4',
+                theme: 'ハムを撃て！',
+                charImg: 'assets/hamm.png',
+                duration: 20,
+                targets: ['hamm', 'alien', 'buzz'],
+                spawnInterval: [900, 1500],
+                targetSizeFactor: [0.07, 0.10],
+                speed: 0.8,
+                maxTargets: 6,
+                lifetime: [2200, 3800],
+            },
         ],
         SCORE_BASE: 100,
         TARGET_IMAGES: {
             alien: 'assets/alien.png',
             buzz: 'assets/buzz.png',
+            hamm: 'assets/hamm.png',
         },
         PROJECTILE_SPEED_FACTOR: 0.035,  // multiplied by viewport height
         PROJECTILE_RADIUS: 9,
