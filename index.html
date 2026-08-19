@@ -141,6 +141,10 @@
               <span class="btn-icon">💍</span>
               <span class="btn-text">輪投げにちょうせん!</span>
             </button>
+            <button class="dart-btn" id="dart-btn">
+              <span class="btn-icon">🎯</span>
+              <span class="btn-text">レックスのダーツ!</span>
+            </button>
             <button class="rank-btn" id="rank-btn">
               <span class="btn-icon">🏆</span>
               <span class="btn-text">ランキング</span>
@@ -199,6 +203,58 @@
           <span class="btn-text">もう一回あそぶ!</span>
         </button>
         <button class="rank-btn" id="ring-title-btn">
+          <span class="btn-icon">🏠</span>
+          <span class="btn-text">タイトルへ</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== ダーツ画面 ===== -->
+    <div id="darts-screen" class="screen">
+      <div class="dart-field" id="dart-field">
+        <button class="ring-back-btn" id="dart-back-btn">✕</button>
+        <div class="ring-hud">
+          <div class="ring-hud-item">
+            <div class="hud-label">SCORE</div>
+            <div class="hud-value" id="dart-score">0</div>
+          </div>
+          <div class="ring-hud-item">
+            <div class="hud-label">DARTS</div>
+            <div class="hud-value" id="dart-count">10</div>
+          </div>
+        </div>
+        <img src="assets/rex.png" alt="レックス" class="dart-rex" id="dart-rex" />
+        <div class="dartboard" id="dartboard"></div>
+        <div class="dart-flight-layer" id="dart-flight-layer"></div>
+        <div class="dart-launcher" id="dart-launcher">
+          <div class="dart-toy" id="dart-toy">🎯</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ダーツリザルト ===== -->
+    <div id="darts-result-screen" class="screen">
+      <div class="result-content">
+        <div class="result-header">
+          <h2 class="result-title">ダーツ結果!</h2>
+          <div class="result-rank" id="dart-result-rank">⭐</div>
+        </div>
+        <div class="result-stats">
+          <div class="stat-row">
+            <span class="stat-label">スコア</span>
+            <span class="stat-value" id="dart-result-score">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">ブルズアイ</span>
+            <span class="stat-value" id="dart-result-bulls">0 / 10</span>
+          </div>
+        </div>
+        <div class="result-message" id="dart-result-message">すごい！</div>
+        <button class="replay-btn" id="dart-replay-btn">
+          <span class="btn-icon">🔄</span>
+          <span class="btn-text">もう一回あそぶ!</span>
+        </button>
+        <button class="rank-btn" id="dart-title-btn">
           <span class="btn-icon">🏠</span>
           <span class="btn-text">タイトルへ</span>
         </button>
@@ -348,5 +404,6 @@
     <script src="leaderboard.js"></script>
     <script src="game.js"></script>
     <script src="ringtoss.js"></script>
+    <script src="darts.js"></script>
   </body>
 </html>
