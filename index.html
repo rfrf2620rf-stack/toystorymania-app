@@ -145,6 +145,10 @@
               <span class="btn-icon">🎯</span>
               <span class="btn-text">レックスのダーツ!</span>
             </button>
+            <button class="plate-btn" id="plate-btn">
+              <span class="btn-icon">🍽️</span>
+              <span class="btn-text">ハムの皿投げ!</span>
+            </button>
             <button class="rank-btn" id="rank-btn">
               <span class="btn-icon">🏆</span>
               <span class="btn-text">ランキング</span>
@@ -255,6 +259,57 @@
           <span class="btn-text">もう一回あそぶ!</span>
         </button>
         <button class="rank-btn" id="dart-title-btn">
+          <span class="btn-icon">🏠</span>
+          <span class="btn-text">タイトルへ</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== 皿投げ画面 ===== -->
+    <div id="plates-screen" class="screen">
+      <div class="plate-field" id="plate-field">
+        <button class="ring-back-btn" id="plate-back-btn">✕</button>
+        <div class="ring-hud">
+          <div class="ring-hud-item">
+            <div class="hud-label">SCORE</div>
+            <div class="hud-value" id="plate-score">0</div>
+          </div>
+          <div class="ring-hud-item">
+            <div class="hud-label">THROWS</div>
+            <div class="hud-value" id="plate-count">10</div>
+          </div>
+        </div>
+        <div class="lane-layer" id="lane-layer"></div>
+        <div class="plate-flight-layer" id="plate-flight-layer"></div>
+        <div class="plate-launcher" id="plate-launcher">
+          <div class="plate-toy" id="plate-toy"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 皿投げリザルト ===== -->
+    <div id="plates-result-screen" class="screen">
+      <div class="result-content">
+        <div class="result-header">
+          <h2 class="result-title">皿投げ結果!</h2>
+          <div class="result-rank" id="plate-result-rank">⭐</div>
+        </div>
+        <div class="result-stats">
+          <div class="stat-row">
+            <span class="stat-label">スコア</span>
+            <span class="stat-value" id="plate-result-score">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">命中数</span>
+            <span class="stat-value" id="plate-result-hits">0 / 10</span>
+          </div>
+        </div>
+        <div class="result-message" id="plate-result-message">すごい！</div>
+        <button class="replay-btn" id="plate-replay-btn">
+          <span class="btn-icon">🔄</span>
+          <span class="btn-text">もう一回あそぶ!</span>
+        </button>
+        <button class="rank-btn" id="plate-title-btn">
           <span class="btn-icon">🏠</span>
           <span class="btn-text">タイトルへ</span>
         </button>
@@ -405,5 +460,6 @@
     <script src="game.js"></script>
     <script src="ringtoss.js"></script>
     <script src="darts.js"></script>
+    <script src="plates.js"></script>
   </body>
 </html>
