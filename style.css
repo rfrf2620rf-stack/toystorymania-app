@@ -759,3 +759,70 @@ html, body {
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.4));
 }
 .dart-toy:active { cursor: grabbing; }
+
+/* ==============================
+   PLATE TOSS (ハムの皿投げ)
+   ============================== */
+.plate-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 20px; font-family: var(--font-display);
+  font-size: clamp(16px, 4vw, 24px); color: var(--ts-white);
+  background: linear-gradient(135deg, #ff6b9d, #7b2d8e);
+  border: none; border-radius: 50px; cursor: pointer;
+  box-shadow: 0 6px 0 #a83b64, 0 10px 20px rgba(0,0,0,0.4);
+  transition: all 0.1s ease; width: 100%;
+}
+.plate-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #a83b64, 0 4px 10px rgba(0,0,0,0.4); }
+
+.plate-field {
+  position: relative;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, #4a1942 0%, #2d1b69 55%, #1a3a2e 100%);
+  overflow: hidden;
+}
+
+.lane-layer { position: absolute; inset: 0; z-index: 2; }
+.lane-plate {
+  position: absolute; transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #fff 58%, #e6ddd0 62%, #fff 66%, #ded3c2 100%);
+  box-shadow: inset 0 0 0 4px rgba(0,0,0,0.08), 0 6px 12px rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+}
+.lane-plate-points {
+  font-family: var(--font-display); font-size: 13px; color: var(--ts-dark);
+  background: var(--ts-yellow); padding: 1px 8px; border-radius: 10px;
+}
+.lane-plate.plate-hit { animation: plateBreak 0.5s ease; }
+@keyframes plateBreak {
+  0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  30% { transform: translate(-50%, -50%) scale(1.25) rotate(-10deg); filter: brightness(1.6); }
+  60% { transform: translate(-50%, -50%) scale(0.9) rotate(8deg); }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+.plate-flight-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.flying-bean {
+  position: absolute; width: 26px; height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffd166, #d47a1f 60%, #7a4a10);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  transform: translate(-50%, -50%);
+}
+.flying-bean.bean-hit { box-shadow: 0 0 0 3px var(--ts-green), 0 4px 8px rgba(0,0,0,0.5); }
+.flying-bean.bean-miss { opacity: 0.75; }
+
+.plate-launcher {
+  position: absolute; z-index: 10;
+  width: 4px; height: 4px;
+}
+.plate-toy {
+  position: absolute; left: 0; top: 0;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffd166, #d47a1f 60%, #7a4a10);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  transform: translate(-50%, -50%);
+  cursor: grab; touch-action: none;
+}
+.plate-toy:active { cursor: grabbing; }
