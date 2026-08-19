@@ -592,3 +592,93 @@ html, body {
 }
 .name-chip:hover { background: #e0e0e0; transform: translateY(-1px); }
 .name-chip:active { transform: translateY(1px); }
+
+/* ==============================
+   RING TOSS (輪投げ)
+   ============================== */
+.ring-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 20px; font-family: var(--font-display);
+  font-size: clamp(16px, 4vw, 24px); color: var(--ts-white);
+  background: linear-gradient(135deg, var(--ts-green), var(--ts-blue));
+  border: none; border-radius: 50px; cursor: pointer;
+  box-shadow: 0 6px 0 #05ac80, 0 10px 20px rgba(0,0,0,0.4);
+  transition: all 0.1s ease; width: 100%;
+}
+.ring-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #05ac80, 0 4px 10px rgba(0,0,0,0.4); }
+
+.ring-field {
+  position: relative;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, #2d1b69 0%, #4a1942 55%, #7b2d8e 100%);
+  overflow: hidden;
+}
+
+.ring-back-btn {
+  position: absolute; top: 14px; left: 14px; z-index: 20;
+  width: 36px; height: 36px; border-radius: 50%; border: none;
+  background: rgba(0,0,0,0.5); color: var(--ts-white);
+  font-size: 18px; cursor: pointer; line-height: 1;
+}
+
+.ring-hud {
+  position: absolute; top: 14px; right: 14px; z-index: 20;
+  display: flex; gap: 12px;
+}
+.ring-hud-item {
+  background: rgba(0,0,0,0.4); border-radius: 12px;
+  padding: 6px 14px; text-align: center; min-width: 64px;
+}
+.ring-hud-item .hud-label {
+  font-size: 10px; color: var(--ts-yellow); letter-spacing: 1px; font-weight: 700;
+}
+.ring-hud-item .hud-value {
+  font-family: var(--font-display); font-size: 20px; color: var(--ts-white);
+}
+
+.peg-layer { position: absolute; inset: 0; z-index: 2; }
+.peg {
+  position: absolute; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.peg-img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+.peg-points {
+  position: absolute; bottom: -14px;
+  background: var(--ts-yellow); color: var(--ts-dark);
+  font-family: var(--font-display); font-size: 11px;
+  padding: 1px 8px; border-radius: 10px;
+}
+.peg.peg-hit .peg-img { animation: pegHit 0.5s ease; }
+@keyframes pegHit {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3) rotate(-8deg); }
+  60% { transform: scale(0.95) rotate(6deg); }
+  100% { transform: scale(1); }
+}
+
+.ring-flight-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.flying-ring {
+  position: absolute; width: 70px; height: 70px;
+  border-radius: 50%; border: 14px solid var(--ts-red);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  transform: translate(-50%, -50%);
+}
+.flying-ring.ring-hit { border-color: var(--ts-green); }
+.flying-ring.ring-miss { opacity: 0.85; }
+
+.ring-launcher {
+  position: absolute; z-index: 10;
+  width: 4px; height: 4px;
+}
+.ring-toy {
+  position: absolute; left: 0; top: 0;
+  width: 70px; height: 70px; border-radius: 50%;
+  border: 14px solid var(--ts-red);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+  transform: translate(-50%, -50%);
+  cursor: grab; touch-action: none;
+}
+.ring-toy:active { cursor: grabbing; }

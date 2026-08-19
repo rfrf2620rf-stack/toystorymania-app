@@ -137,6 +137,10 @@
               <span class="btn-icon">🚀</span>
               <span class="btn-text">ゲームスタート!</span>
             </button>
+            <button class="ring-btn" id="ring-btn">
+              <span class="btn-icon">💍</span>
+              <span class="btn-text">輪投げにちょうせん!</span>
+            </button>
             <button class="rank-btn" id="rank-btn">
               <span class="btn-icon">🏆</span>
               <span class="btn-text">ランキング</span>
@@ -147,6 +151,57 @@
             <img src="assets/buzz.png" alt="バズ" class="title-target title-buzz" />
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ===== 輪投げ画面 ===== -->
+    <div id="ringtoss-screen" class="screen">
+      <div class="ring-field" id="ring-field">
+        <button class="ring-back-btn" id="ring-back-btn">✕</button>
+        <div class="ring-hud">
+          <div class="ring-hud-item">
+            <div class="hud-label">SCORE</div>
+            <div class="hud-value" id="ring-score">0</div>
+          </div>
+          <div class="ring-hud-item">
+            <div class="hud-label">RINGS</div>
+            <div class="hud-value" id="ring-count">10</div>
+          </div>
+        </div>
+        <div class="peg-layer" id="peg-layer"></div>
+        <div class="ring-flight-layer" id="ring-flight-layer"></div>
+        <div class="ring-launcher" id="ring-launcher">
+          <div class="ring-toy" id="ring-toy"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 輪投げリザルト ===== -->
+    <div id="ringtoss-result-screen" class="screen">
+      <div class="result-content">
+        <div class="result-header">
+          <h2 class="result-title">輪投げ結果!</h2>
+          <div class="result-rank" id="ring-result-rank">⭐</div>
+        </div>
+        <div class="result-stats">
+          <div class="stat-row">
+            <span class="stat-label">スコア</span>
+            <span class="stat-value" id="ring-result-score">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">成功数</span>
+            <span class="stat-value" id="ring-result-hits">0 / 10</span>
+          </div>
+        </div>
+        <div class="result-message" id="ring-result-message">すごい！</div>
+        <button class="replay-btn" id="ring-replay-btn">
+          <span class="btn-icon">🔄</span>
+          <span class="btn-text">もう一回あそぶ!</span>
+        </button>
+        <button class="rank-btn" id="ring-title-btn">
+          <span class="btn-icon">🏠</span>
+          <span class="btn-text">タイトルへ</span>
+        </button>
       </div>
     </div>
 
@@ -292,5 +347,6 @@
     <!-- App Scripts -->
     <script src="leaderboard.js"></script>
     <script src="game.js"></script>
+    <script src="ringtoss.js"></script>
   </body>
 </html>
